@@ -2,6 +2,7 @@
 
 namespace App\Filament\Store\Resources\Inventories\Tables;
 
+use App\Support\SiteSettingStore;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -24,7 +25,7 @@ class InventoriesTable
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('price')
-                    ->money('USD')
+                    ->money((string) SiteSettingStore::get('currency', 'USD'))
                     ->sortable(),
                 TextColumn::make('status')
                     ->badge(),

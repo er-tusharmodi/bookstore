@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Inventories\Schemas;
 
+use App\Support\SiteSettingStore;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -38,7 +39,8 @@ class InventoryForm
                         TextInput::make('price')
                             ->required()
                             ->numeric()
-                            ->minValue(0),
+                            ->minValue(0)
+                            ->prefix((string) SiteSettingStore::get('currency', 'USD')),
                         TextInput::make('reorder_level')
                             ->numeric()
                             ->minValue(0)

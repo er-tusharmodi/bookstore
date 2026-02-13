@@ -13,8 +13,8 @@
     --border: #d5d9d9;
     --focus: rgba(0, 113, 133, 0.28);
     --shadow: 0 2px 8px rgba(15, 17, 17, 0.08);
-    --radius-lg: 3px;
-    --radius-md: 3px;
+    --radius-lg: 8px;
+    --radius-md: 6px;
 }
 
 * {
@@ -117,7 +117,7 @@ a {
 
 .login-btn {
     border: 1px solid #f0c14b;
-    border-radius: 3px;
+    border-radius: 8px;
     background: #ffd814;
     color: #111111;
     height: 38px;
@@ -138,7 +138,7 @@ a {
 .utility-btn {
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.35);
-    border-radius: 3px;
+    border-radius: 8px;
     background: rgba(255, 255, 255, 0.08);
     color: #ffffff;
     width: 40px;
@@ -209,7 +209,7 @@ a {
     background: #ffffff;
     color: #111111;
     padding: 14px 18px;
-    border-radius: 4px;
+    border-radius: 10px;
     box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.12),
         0 2px 4px rgba(0, 0, 0, 0.08);
@@ -288,7 +288,7 @@ a {
 
 .drawer-close {
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: 8px;
     background: #fff;
     width: 30px;
     height: 30px;
@@ -305,7 +305,7 @@ a {
 
 .drawer-tab {
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: 8px;
     background: #f8fafc;
     color: #334155;
     font-weight: 700;
@@ -330,7 +330,7 @@ a {
 
 .drawer-item {
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: 8px;
     background: #ffffff;
     padding: 0.55rem 0.62rem;
 }
@@ -392,11 +392,6 @@ main {
 .section-subtitle,
 .muted {
     color: var(--muted);
-}
-
-.section-subtitle {
-    padding-left: 2em;
-    margin: 0 0 2em 0;
 }
 
 .hero-grid {
@@ -633,7 +628,7 @@ input {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 3px;
+    border-radius: 8px;
     border: 1px solid var(--btn-border);
     background: var(--btn);
     color: #0f1111;
@@ -703,7 +698,7 @@ input {
     height: 40px;
     padding: 0;
     border: 1px solid var(--btn-border);
-    border-radius: 3px;
+    border-radius: 8px;
     background: var(--btn);
     color: #0f1111;
     display: flex;
@@ -766,7 +761,7 @@ input {
 .control input,
 .control select {
     border: 1px solid #888c8c;
-    border-radius: 3px;
+    border-radius: 8px;
     padding: 0.55rem 0.62rem;
     background: #ffffff;
     color: var(--ink);
@@ -791,7 +786,7 @@ input {
     justify-content: space-between;
     padding: 0.45rem 0.6rem;
     border: 1px solid #888c8c;
-    border-radius: 3px;
+    border-radius: 8px;
     background: #ffffff;
 }
 
@@ -825,7 +820,7 @@ input {
 
 .login-card {
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 10px;
     background: #ffffff;
     padding: 1rem;
     box-shadow: var(--shadow);
@@ -870,7 +865,7 @@ input {
 
 .login-side {
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 10px;
     background: #ffffff;
     padding: 1rem;
     box-shadow: var(--shadow);
@@ -966,7 +961,7 @@ input {
 }
 
 .author-detail-hero {
-    background: #f9fafb;
+    background: linear-gradient(to bottom, #f9fafb 0%, transparent 100%);
     padding: 2rem 0;
     margin-bottom: 1.5rem;
 }
@@ -980,7 +975,6 @@ input {
     gap: 1.5rem;
     align-items: flex-start;
     margin-bottom: 1.5rem;
-    padding-left: 2em;
 }
 
 .author-avatar-hero {
@@ -1029,7 +1023,7 @@ input {
 .author-hero-quote {
     background: #ffffff;
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 8px;
     padding: 1.2rem 1.5rem;
     margin: 0;
     display: flex;
@@ -1045,6 +1039,75 @@ input {
     line-height: 1.6;
 }
 
+}
+
+.detail-header .hero {
+    height: 100%;
+}
+
+.list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.45rem;
+}
+
+.list li {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.65rem;
+    background: #ffffff;
+}
+
+/* Spotlight Grid Layout */
+.spotlight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.spotlight-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: var(--shadow);
+}
+
+.spotlight-card:hover {
+    border-color: var(--link);
+    box-shadow: 0 6px 16px rgba(0, 113, 133, 0.12);
+    transform: translateY(-4px);
+}
+
+.spotlight-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 300px;
+}
+
+.book-cover-spotlight {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.spotlight-card:hover .book-cover-spotlight {
+    transform: scale(1.05);
+}
+
+.card-image-wrapper {
+    position: relative;
     overflow: hidden;
 }
 
@@ -1063,7 +1126,7 @@ input {
     background: rgba(255, 216, 20, 0.9);
     color: #0f1111;
     padding: 0.35rem 0.75rem;
-    border-radius: 4px;
+    border-radius: 15px;
     font-size: 0.75rem;
     font-weight: 700;
 }
@@ -1075,7 +1138,7 @@ input {
     width: 40px;
     height: 40px;
     border: 1px solid #fde068;
-    border-radius: 3px;
+    border-radius: 8px;
     background: #fef3c7;
     color: #111111;
     display: flex;
@@ -1114,7 +1177,7 @@ input {
     align-items: center;
     justify-content: center;
     border: 1px solid var(--btn-border);
-    border-radius: 3px;
+    border-radius: 8px;
     background: var(--btn);
     height: 40px;
     gap: 0.5rem;
@@ -1143,11 +1206,11 @@ input {
 }
 
 .counter-btn.minus {
-    border-radius: 3px 0 0 8px;
+    border-radius: 8px 0 0 8px;
 }
 
 .counter-btn.plus {
-    border-radius: 0 3px 3px 0;
+    border-radius: 0 8px 8px 0;
 }
 
 .counter-value {
@@ -1267,7 +1330,7 @@ input {
 
 .highlight-thumb {
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: 8px;
     background: #ffffff;
     text-align: left;
     padding: 0.5rem 0.58rem;
@@ -1297,7 +1360,7 @@ input {
 .highlight-nav {
     width: 2rem;
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: 8px;
     background: #ffffff;
     color: #1f2937;
     font-size: 1.2rem;
@@ -1383,7 +1446,7 @@ input {
     width: 240px;
     max-width: 100%;
     border: 1px solid #4b5563;
-    border-radius: 3px;
+    border-radius: 8px;
     background: #ffffff;
     color: #0f1111;
     padding: 0.52rem 0.62rem;
@@ -1391,7 +1454,7 @@ input {
 
 .footer-form button {
     border: 1px solid #fbbf24;
-    border-radius: 3px;
+    border-radius: 8px;
     background: #fbbf24;
     color: #111827;
     font-weight: 700;
@@ -1457,7 +1520,7 @@ input {
     align-items: center;
     gap: 0.55rem;
     border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 4px;
+    border-radius: 10px;
     background: rgba(255, 255, 255, 0.04);
     padding: 0.45rem 0.55rem;
     transition:
@@ -1575,7 +1638,7 @@ input {
     position: sticky;
     top: 86px;
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 10px;
     background: #ffffff;
     padding: 0.9rem;
     box-shadow: var(--shadow);
@@ -1600,7 +1663,7 @@ input {
     justify-content: space-between;
     gap: 0.4rem;
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: 8px;
     background: #ffffff;
     color: #111827;
     font-size: 0.84rem;
@@ -1622,7 +1685,7 @@ input {
 
 .account-panel {
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 10px;
     background: #ffffff;
     padding: 0.95rem;
     box-shadow: var(--shadow);
@@ -1648,7 +1711,7 @@ input {
 
 .account-kpi {
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: 8px;
     background: #ffffff;
     padding: 0.7rem;
 }
@@ -1731,7 +1794,7 @@ input {
     max-height: calc(100vh - 2rem);
     overflow: auto;
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 12px;
     background: #ffffff;
     box-shadow: 0 24px 54px rgba(0, 0, 0, 0.22);
     padding: 0.95rem;
@@ -1787,7 +1850,7 @@ input {
 
 .item-row {
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: 8px;
     background: #ffffff;
     padding: 0.65rem;
     display: flex;

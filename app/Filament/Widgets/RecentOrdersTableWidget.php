@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Order;
+use App\Support\SiteSettingStore;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -12,6 +13,7 @@ class RecentOrdersTableWidget extends BaseWidget
     protected static ?string $heading = 'Recent Orders';
     
     protected static ?string $maxContentWidth = 'full';
+    protected int | string | array $columnSpan = 'full';
     
     protected static ?int $sort = 6;
 
@@ -28,7 +30,7 @@ class RecentOrdersTableWidget extends BaseWidget
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total')
-                    ->money()
+                    ->money((string) SiteSettingStore::get('currency', 'USD'))
                     ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([

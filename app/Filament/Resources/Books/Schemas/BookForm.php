@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Books\Schemas;
 
+use App\Support\SiteSettingStore;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -42,7 +43,8 @@ class BookForm
                     ->maxLength(255),
                 TextInput::make('price')
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->prefix((string) SiteSettingStore::get('currency', 'USD')),
                 TextInput::make('published_year')
                     ->numeric(),
                 TextInput::make('rating')

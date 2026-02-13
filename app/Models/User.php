@@ -81,4 +81,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+
+    public function followingAuthors()
+    {
+        return $this->belongsToMany(Author::class, 'author_user')->withTimestamps();
+    }
 }

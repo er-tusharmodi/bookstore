@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Orders\Schemas;
 
+use App\Support\SiteSettingStore;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -37,19 +38,23 @@ class OrderForm
                         TextInput::make('subtotal')
                             ->required()
                             ->numeric()
-                            ->default(0.0),
+                            ->default(0.0)
+                            ->prefix((string) SiteSettingStore::get('currency', 'USD')),
                         TextInput::make('shipping')
                             ->required()
                             ->numeric()
-                            ->default(0.0),
+                            ->default(0.0)
+                            ->prefix((string) SiteSettingStore::get('currency', 'USD')),
                         TextInput::make('tax')
                             ->required()
                             ->numeric()
-                            ->default(0.0),
+                            ->default(0.0)
+                            ->prefix((string) SiteSettingStore::get('currency', 'USD')),
                         TextInput::make('total')
                             ->required()
                             ->numeric()
-                            ->default(0.0),
+                            ->default(0.0)
+                            ->prefix((string) SiteSettingStore::get('currency', 'USD')),
                     ])->columns(2),
                 Section::make('Order Status & Notes')
                     ->schema([

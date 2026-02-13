@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Orders\Tables;
 
+use App\Support\SiteSettingStore;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -29,7 +30,7 @@ class OrdersTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('total')
-                    ->money()
+                    ->money((string) SiteSettingStore::get('currency', 'USD'))
                     ->sortable(),
                 SelectColumn::make('status')
                     ->options([

@@ -59,7 +59,15 @@ class SiteSetting extends Page implements HasForms
                         ->directory('logos')
                         ->image()
                         ->preserveFilenames()
-                        ->helperText('Uploads to storage/app/public/logos. Ensure storage is linked.'),
+                        ->helperText('Uploads to storage/app/public/logos. Ensure storage is linked.')
+                        ->columnSpan(1),
+                    TextInput::make('logo_alt')
+                        ->label('Logo alt text')
+                        ->maxLength(255)
+                        ->columnSpan(1),
+                    TextInput::make('footer_text')
+                        ->label('Footer text')
+                        ->maxLength(255),
                     FileUpload::make('logo_light_path')
                         ->label('Logo file (For light version)')
                         ->disk('public')
@@ -67,25 +75,25 @@ class SiteSetting extends Page implements HasForms
                         ->image()
                         ->preserveFilenames()
                         ->helperText('Logo used when light mode is active.'),
+                    TextInput::make('logo_height')
+                        ->label('Logo height')
+                        ->disabled(true)
+                        ->maxLength(20),
+                    TextInput::make('logo_width')
+                        ->label('Logo width')
+                        ->placeholder('Auto')
+                        ->disabled(true)
+                        ->maxLength(20),
                     FileUpload::make('favicon_path')
                         ->label('Favicon file')
                         ->disk('public')
                         ->directory('favicons')
                         ->image()
                         ->preserveFilenames()
-                        ->helperText('Upload a square image or .ico file to storage/app/public/favicons.'),
-                    TextInput::make('logo_alt')
-                        ->label('Logo alt text')
-                        ->maxLength(255),
-                    TextInput::make('logo_height')
-                        ->label('Logo height')
-                        ->helperText('Example: 40px')
-                        ->maxLength(20),
-                    TextInput::make('footer_text')
-                        ->label('Footer text')
-                        ->maxLength(255),
+                        ->helperText('Upload a square image or .ico file to storage/app/public/favicons.')
+                        ->columnSpan(1),
                 ])
-                ->columns(2),
+                ->columns(3),
             Section::make('Contact')
                 ->schema([
                     TextInput::make('contact_email')

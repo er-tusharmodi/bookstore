@@ -11,9 +11,6 @@ use App\Filament\Widgets\CustomerAcquisitionWidget;
 use App\Filament\Widgets\GenreDistributionWidget;
 use App\Filament\Widgets\ReviewStatsWidget;
 use App\Filament\Widgets\RecentOrdersTableWidget;
-use App\Filament\Widgets\LowStockAlertWidget;
-use App\Filament\Widgets\ActiveCouponsWidget;
-use App\Filament\Widgets\OrderStatusDistributionWidget;
 use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
@@ -26,15 +23,12 @@ class Dashboard extends BaseDashboard
             StatsOverviewWidget::class,
             OrdersChartWidget::class,
             RevenueChartWidget::class,
-            OrderStatusDistributionWidget::class,
             TopSellingBooksWidget::class,
             TopAuthorsWidget::class,
             CustomerAcquisitionWidget::class,
             GenreDistributionWidget::class,
             ReviewStatsWidget::class,
             RecentOrdersTableWidget::class,
-            LowStockAlertWidget::class,
-            ActiveCouponsWidget::class,
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Coupon;
+use App\Support\SiteSettingStore;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -42,7 +43,9 @@ class ActiveCouponsWidget extends BaseWidget
                     ->sortable(),
                 Tables\Columns\TextColumn::make('discount_value')
                     ->formatStateUsing(fn ($state, $record) => 
-                        $record->discount_type === 'percent' ? $state . '%' : '$' . $state
+                        $record->discount_type === 'percent'
+                            ? $state . '%'
+                            : (string) SiteSettingStore::get('currency', 'USD') . ' ' . $state
                     )
                     ->sortable(),
                 Tables\Columns\TextColumn::make('times_used')

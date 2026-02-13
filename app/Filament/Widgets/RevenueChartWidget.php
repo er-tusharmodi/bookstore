@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Order;
+use App\Support\SiteSettingStore;
 use Filament\Widgets\LineChartWidget;
 
 class RevenueChartWidget extends LineChartWidget
@@ -17,6 +18,7 @@ class RevenueChartWidget extends LineChartWidget
     {
         $data = [];
         $labels = [];
+        $currency = (string) SiteSettingStore::get('currency', 'USD');
         
         for ($i = 11; $i >= 0; $i--) {
             $date = now()->subMonths($i);
@@ -34,7 +36,7 @@ class RevenueChartWidget extends LineChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Revenue ($)',
+                    'label' => "Revenue ({$currency})",
                     'data' => $data,
                     'borderColor' => '#10b981',
                     'backgroundColor' => 'rgba(16, 185, 129, 0.1)',

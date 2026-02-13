@@ -2,6 +2,7 @@
 
 namespace App\Filament\Store\Resources\Inventories\Schemas;
 
+use App\Support\SiteSettingStore;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -26,7 +27,8 @@ class InventoryForm
                     ->numeric()
                     ->default(0),
                 TextInput::make('price')
-                    ->numeric(),
+                    ->numeric()
+                    ->prefix((string) SiteSettingStore::get('currency', 'USD')),
                 TextInput::make('reorder_level')
                     ->numeric()
                     ->default(0),

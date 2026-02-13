@@ -198,34 +198,64 @@ table {
     transition: background-color 0.2s ease;
 }
 
+/* Hide top-right user menu (avatar, welcome, role, sign out) */
+.fi-topbar .fi-user-menu-trigger,
+.fi-topbar .fi-user-menu,
+.fi-topbar .fi-simple-user-menu-ctn,
+.fi-topbar .fi-topbar-user-menu,
+.fi-topbar .fi-topbar-item.fi-user-menu,
+.fi-sidebar .fi-user-menu-trigger,
+.fi-user-menu,
+.fi-user-menu-trigger,
+.fi-user-menu-ctn,
+.fi-simple-user-menu-ctn,
+.fi-user-menu .fi-dropdown-panel {
+    display: none !important;
+}
+
+.fi-ta-ctn .order-status-pending,
+.fi-ta-ctn .order-status-pending .fi-ta-cell,
+.fi-ta-ctn .order-status-pending td,
 .fi-table tbody tr.order-status-pending,
 .fi-table tbody tr.order-status-pending td {
-    background-color: #f3f4f6;
-    color: #111827;
+    background-color: #f3f4f6 !important;
+    color: #111827 !important;
 }
 
+.fi-ta-ctn .order-status-processing,
+.fi-ta-ctn .order-status-processing .fi-ta-cell,
+.fi-ta-ctn .order-status-processing td,
 .fi-table tbody tr.order-status-processing,
 .fi-table tbody tr.order-status-processing td {
-    background-color: #dbeafe;
-    color: #1e3a8a;
+    background-color: #dbeafe !important;
+    color: #1e3a8a !important;
 }
 
+.fi-ta-ctn .order-status-shipped,
+.fi-ta-ctn .order-status-shipped .fi-ta-cell,
+.fi-ta-ctn .order-status-shipped td,
 .fi-table tbody tr.order-status-shipped,
 .fi-table tbody tr.order-status-shipped td {
-    background-color: #e0e7ff;
-    color: #312e81;
+    background-color: #e0e7ff !important;
+    color: #312e81 !important;
 }
 
+.fi-ta-ctn .order-status-delivered,
+.fi-ta-ctn .order-status-delivered .fi-ta-cell,
+.fi-ta-ctn .order-status-delivered td,
 .fi-table tbody tr.order-status-delivered,
 .fi-table tbody tr.order-status-delivered td {
-    background-color: #d1fae5;
-    color: #065f46;
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
 }
 
+.fi-ta-ctn .order-status-cancelled,
+.fi-ta-ctn .order-status-cancelled .fi-ta-cell,
+.fi-ta-ctn .order-status-cancelled td,
 .fi-table tbody tr.order-status-cancelled,
 .fi-table tbody tr.order-status-cancelled td {
-    background-color: #fee2e2;
-    color: #991b1b;
+    background-color: #fee2e2 !important;
+    color: #991b1b !important;
 }
 
 .fi-table tbody tr:hover {

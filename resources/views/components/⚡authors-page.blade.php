@@ -24,7 +24,7 @@ new class extends Component
 
         public function getAuthorsProperty()
         {
-                $query = Author::query();
+                $query = Author::query()->withCount('books');
 
                 if ($this->search !== '') {
                         $query->where(function ($builder) {
@@ -164,16 +164,25 @@ new class extends Component
 
             <div class="grid cols-3">
                 @forelse ($this->authors as $author)
-                    <article class="card">
-                        <div class="author-avatar">{{ strtoupper(substr($author->name, 0, 2)) }}</div>
-                        <h3>{{ $author->name }}</h3>
-                        <p class="muted">{{ $author->specialty }}</p>
-                        <p class="muted">{{ $author->city }}</p>
-                        <div class="pill-row">
-                            <span class="pill ghost">{{ $author->published_books }} books</span>
-                            <span class="pill">{{ $author->followers_count }} followers</span>
+                    <article class="card author-card">
+                        <div class="author-card-header">
+                            <div class="author-avatar-large">{{ strtoupper(substr($author->name, 0, 2)) }}</div>
+                            <div class="author-card-info">
+                                <h3>{{ $author->name }}</h3>
+                                <p class="muted">{{ $author->specialty }}</p>
+                            </div>
                         </div>
-                        <a class="button secondary" href="{{ route('author.detail', ['slug' => $author->slug]) }}">View Profile</a>
+                        <div class="author-card-stats">
+                            <div class="author-stat">
+                                <strong>{{ number_format($author->books_count ?? 0) }}</strong>
+                                <span>Books</span>
+                            </div>
+                            <div class="author-stat">
+                                <strong>{{ number_format($author->followers_count ?? 0) }}</strong>
+                                <span>Followers</span>
+                            </div>
+                        </div>
+                        <a class="button" href="{{ route('author.detail', ['slug' => $author->slug]) }}">View Profile</a>
                     </article>
                 @empty
                     <div class="empty-state">No authors match these filters. Change specialty, city, or minimum limits.</div>

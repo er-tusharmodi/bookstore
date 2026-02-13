@@ -1,15 +1,18 @@
 <?php
 
 use App\Models\Order;
+use App\Support\SiteSettingStore;
 use Livewire\Component;
 
 new class extends Component
 {
         public $orders = [];
+        public string $currency = 'USD';
 
         public function mount(): void
         {
                 $user = auth()->user();
+                $this->currency = (string) SiteSettingStore::get('currency', 'USD');
                 if (! $user) {
                         return;
                 }
@@ -81,7 +84,7 @@ new class extends Component
                                 <td>#{{ $order['number'] }}</td>
                                 <td>{{ $order['date'] }}</td>
                                 <td>{{ $order['items'] }}</td>
-                                <td>${{ number_format($order['amount'], 2) }}</td>
+                                <td>{{ $currency }} {{ number_format($order['amount'], 2) }}</td>
                                 <td><span class="status-pill {{ $order['statusClass'] }}">{{ $order['status'] }}</span></td>
                                 <td><button type="button" class="button secondary">View Details</button></td>
                             </tr>

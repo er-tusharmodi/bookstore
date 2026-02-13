@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Cart;
+use App\Support\SiteSettingStore;
 use Livewire\Component;
 
 new class extends Component
@@ -10,10 +11,12 @@ new class extends Component
         public float $shipping = 0.0;
         public float $tax = 0.0;
         public float $total = 0.0;
+        public string $currency = 'USD';
 
         public function mount(): void
         {
                 $user = auth()->user();
+                $this->currency = (string) SiteSettingStore::get('currency', 'USD');
                 if (! $user) {
                         return;
                 }
@@ -86,8 +89,8 @@ new class extends Component
                                 <tr>
                                     <td>{{ $item['title'] }}</td>
                                     <td>{{ $item['quantity'] }}</td>
-                                    <td>${{ number_format($item['price'], 2) }}</td>
-                                    <td>${{ number_format($item['total'], 2) }}</td>
+                                    <td>{{ $currency }} {{ number_format($item['price'], 2) }}</td>
+                                    <td>{{ $currency }} {{ number_format($item['total'], 2) }}</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -101,10 +104,10 @@ new class extends Component
                 <article class="account-panel">
                     <h2>Order Summary</h2>
                     <ul class="summary-list">
-                        <li><span>Subtotal</span><strong>${{ number_format($subtotal, 2) }}</strong></li>
-                        <li><span>Shipping</span><strong>${{ number_format($shipping, 2) }}</strong></li>
-                        <li><span>Tax</span><strong>${{ number_format($tax, 2) }}</strong></li>
-                        <li class="total"><span>Total</span><strong>${{ number_format($total, 2) }}</strong></li>
+                        <li><span>Subtotal</span><strong>{{ $currency }} {{ number_format($subtotal, 2) }}</strong></li>
+                        <li><span>Shipping</span><strong>{{ $currency }} {{ number_format($shipping, 2) }}</strong></li>
+                        <li><span>Tax</span><strong>{{ $currency }} {{ number_format($tax, 2) }}</strong></li>
+                        <li class="total"><span>Total</span><strong>{{ $currency }} {{ number_format($total, 2) }}</strong></li>
                     </ul>
                     <button class="button" style="margin-top:0.9rem;width:100%;" type="button">Proceed to Checkout</button>
                     <button class="button secondary" style="margin-top:0.5rem;width:100%;" type="button">Continue Shopping</button>

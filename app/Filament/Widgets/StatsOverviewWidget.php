@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Book;
 use App\Models\User;
 use App\Models\Review;
+use App\Support\SiteSettingStore;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -23,6 +24,7 @@ class StatsOverviewWidget extends BaseWidget
         $totalCustomers = User::role('customer')->count();
         
         $avgOrderValue = $totalOrders > 0 ? $totalRevenue / $totalOrders : 0;
+        $currency = (string) SiteSettingStore::get('currency', 'USD');
         
         $pendingOrders = Order::where('status', 'pending')->count();
         
@@ -31,7 +33,7 @@ class StatsOverviewWidget extends BaseWidget
         $approvedReviews = Review::where('is_approved', true)->count();
 
         return [
-            Stat::make('Total Revenue', '$' . number_format($totalRevenue, 2))
+            Stat::make('Total Revenue', $currency . ' ' . number_format($totalRevenue, 2))
                 ->description('All time earnings')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
@@ -41,7 +43,7 @@ class StatsOverviewWidget extends BaseWidget
                 ->descriptionIcon('heroicon-m-shopping-cart')
                 ->color('info'),
             
-            Stat::make('Avg Order Value', '$' . number_format($avgOrderValue, 2))
+            Stat::make('Avg Order Value', $currency . ' ' . number_format($avgOrderValue, 2))
                 ->description('Average per order')
                 ->descriptionIcon('heroicon-m-calculator')
                 ->color('warning'),

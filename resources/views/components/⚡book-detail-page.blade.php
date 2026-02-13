@@ -1,6 +1,10 @@
 <?php
 
 use App\Models\Book;
+use App\Models\Cart;
+use App\Models\CartItem;
+use App\Models\Wishlist;
+use App\Support\SiteSettingStore;
 use Livewire\Component;
 
 new class extends Component
@@ -8,10 +12,126 @@ new class extends Component
     public string $slug = '';
     public ?Book $book = null;
     public $relatedBooks;
+    public string $currency = 'USD';
+    public array $wishlistBookIds = [];
+    public array $cartQuantities = [];
+
+    public function addToCart(int $bookId): void
+    {
+        $user = auth()->user();
+        if (! $user) {
+            $this->redirectRoute('login');
+            return;
+        }
+
+        $book = Book::find($bookId);
+        if (! $book) {
+            return;
+        }
+
+        $cart = Cart::firstOrCreate(
+            ['user_id' => $user->id, 'status' => 'active'],
+            ['checked_out_at' => null]
+        );
+
+        $item = CartItem::where('cart_id', $cart->id)
+            ->where('book_id', $book->id)
+            ->first();
+
+        $quantity = $item ? $item->quantity + 1 : 1;
+        $unitPrice = (float) $book->price;
+
+        if ($item) {
+            $item->update([
+                'quantity' => $quantity,
+                'unit_price' => $unitPrice,
+                'line_total' => $quantity * $unitPrice,
+            ]);
+        } else {
+            CartItem::create([
+                'cart_id' => $cart->id,
+                'book_id' => $book->id,
+                'quantity' => 1,
+                'unit_price' => $unitPrice,
+                'line_total' => $unitPrice,
+            ]);
+        }
+
+        $this->cartQuantities[$bookId] = $quantity;
+        $this->dispatch('cart-updated', bookId: $bookId);
+    }
+
+    public function addToWishlist(int $bookId): void
+    {
+        $user = auth()->user();
+        if (! $user) {
+            $this->redirectRoute('login');
+            return;
+        }
+
+        $book = Book::find($bookId);
+        if (! $book) {
+            return;
+        }
+
+        $wishlist = Wishlist::where('user_id', $user->id)->where('book_id', $book->id)->first();
+        
+        if ($wishlist) {
+            // Remove from wishlist
+            $wishlist->delete();
+            if (($key = array_search($bookId, $this->wishlistBookIds)) !== false) {
+                unset($this->wishlistBookIds[$key]);
+            }
+        } else {
+            // Add to wishlist
+            Wishlist::create([
+                'user_id' => $user->id,
+                'book_id' => $book->id,
+            ]);
+            $this->wishlistBookIds[] = $bookId;
+        }
+
+        $this->dispatch('wishlist-updated', bookId: $bookId);
+    }
+
+    public function decrementFromCart(int $bookId): void
+    {
+        $user = auth()->user();
+        if (! $user) {
+            return;
+        }
+
+        $cart = Cart::where('user_id', $user->id)->where('status', 'active')->first();
+        if (! $cart) {
+            return;
+        }
+
+        $item = CartItem::where('cart_id', $cart->id)->where('book_id', $bookId)->first();
+        if (! $item) {
+            return;
+        }
+
+        $newQuantity = $item->quantity - 1;
+        if ($newQuantity > 0) {
+            $item->update([
+                'quantity' => $newQuantity,
+                'line_total' => $newQuantity * $item->unit_price,
+            ]);
+            $this->cartQuantities[$bookId] = $newQuantity;
+        } else {
+            $item->delete();
+            unset($this->cartQuantities[$bookId]);
+        }
+
+        $this->dispatch('cart-updated', bookId: $bookId);
+    }
 
     public function mount(string $slug): void
     {
         $this->slug = $slug;
+        $this->currency = (string) SiteSettingStore::get('currency', 'USD');
+        $this->loadWishlist();
+        $this->loadCartQuantities();
         $this->book = Book::query()
             ->with(['author', 'genreRelation', 'formatRelation'])
             ->where('slug', $slug)
@@ -41,6 +161,30 @@ new class extends Component
                 ->get();
         }
     }
+
+    public function loadWishlist(): void
+    {
+        $user = auth()->user();
+        if (! $user) {
+            return;
+        }
+        $this->wishlistBookIds = Wishlist::where('user_id', $user->id)->pluck('book_id')->toArray();
+    }
+
+    public function loadCartQuantities(): void
+    {
+        $user = auth()->user();
+        if (! $user) {
+            return;
+        }
+        $cart = Cart::where('user_id', $user->id)->where('status', 'active')->first();
+        if ($cart) {
+            $items = CartItem::where('cart_id', $cart->id)->get();
+            foreach ($items as $item) {
+                $this->cartQuantities[$item->book_id] = $item->quantity;
+            }
+        }
+    }
 };
 ?>
 
@@ -65,13 +209,30 @@ new class extends Component
             </div>
 
             <div class="price-row">
-                <strong>${{ number_format($book->price, 2) }}</strong>
+                <strong>{{ $currency }} {{ number_format($book->price, 2) }}</strong>
                 <span>Rating {{ number_format($book->rating, 1) }}</span>
             </div>
 
             <div class="product-actions">
-                <button type="button" class="button secondary" data-book-id="{{ $book->id }}">Save</button>
-                <button type="button" class="button" data-book-id="{{ $book->id }}">Add to Cart</button>
+                @auth
+                    @if(($cartQuantities[$book->id] ?? 0) == 0)
+                        <button type="button" class="button" wire:click="addToCart({{ $book->id }})" title="Add to Cart">Add to Cart</button>
+                    @else
+                        <div class="cart-counter">
+                            <button type="button" class="counter-btn minus" wire:click="decrementFromCart({{ $book->id }})" data-book-id="{{ $book->id }}" title="Decrease">-</button>
+                            <span class="counter-value" data-book-id="{{ $book->id }}">{{ $cartQuantities[$book->id] }}</span>
+                            <button type="button" class="counter-btn plus" wire:click="addToCart({{ $book->id }})" data-book-id="{{ $book->id }}" title="Increase">+</button>
+                        </div>
+                    @endif
+                @endauth
+                @guest
+                    <button type="button" class="button" onclick="window.location.href='{{ route('login') }}'" title="Login to add to cart">Add to Cart</button>
+                @endguest
+                <button type="button" class="icon-btn wishlist-btn wishlist-badge" wire:click="addToWishlist({{ $book->id }})" data-book-id="{{ $book->id }}" title="Add to Wishlist" data-in-wishlist="{{ in_array($book->id, $wishlistBookIds) ? 'true' : 'false' }}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                </button>
             </div>
         </article>
 
@@ -106,13 +267,32 @@ new class extends Component
                     <div class="book-cover" style="background: {{ $related->cover_tone ?? '#232f3e' }};">
                         {{ $related->genreRelation?->name ?? $related->genre }}
                     </div>
-                    <h3>{{ $related->title }}</h3>
+                    <a href="{{ route('book.detail', ['slug' => $related->slug]) }}" style="text-decoration: none; color: inherit;">
+                        <h3>{{ $related->title }}</h3>
+                    </a>
                     <p class="muted">by {{ $related->author?->name }}</p>
                     <div class="price-row">
-                        <strong>${{ number_format($related->price, 2) }}</strong>
+                        <strong>{{ $currency }} {{ number_format($related->price, 2) }}</strong>
                         <span>Rating {{ number_format($related->rating, 1) }}</span>
                     </div>
-                    <a class="button secondary" href="{{ route('book.detail', ['slug' => $related->slug]) }}">View Details</a>
+                    <div class="item-actions">
+                        @auth
+                            @if(($cartQuantities[$related->id] ?? 0) == 0)
+                                <button type="button" class="button" wire:click="addToCart({{ $related->id }})" title="Add to Cart">Add to Cart</button>
+                            @else
+                                <div class="cart-counter">
+                                    <button type="button" class="counter-btn minus" wire:click="decrementFromCart({{ $related->id }})" data-book-id="{{ $related->id }}" title="Decrease">-</button>
+                                    <span class="counter-value" data-book-id="{{ $related->id }}">{{ $cartQuantities[$related->id] }}</span>
+                                    <button type="button" class="counter-btn plus" wire:click="addToCart({{ $related->id }})" data-book-id="{{ $related->id }}" title="Increase">+</button>
+                                </div>
+                            @endif
+                        @endauth
+                        <button type="button" class="icon-btn wishlist-btn wishlist-badge" wire:click="addToWishlist({{ $related->id }})" data-book-id="{{ $related->id }}" title="Add to Wishlist" data-in-wishlist="{{ in_array($related->id, $wishlistBookIds) ? 'true' : 'false' }}">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </article>
             @empty
                 <div class="empty-state">No related books found yet.</div>

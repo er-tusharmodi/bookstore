@@ -30,4 +30,9 @@ class Author extends Model
     {
         return $this->hasMany(Book::class);
     }
+
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'author_user')->withTimestamps();
+    }
 }

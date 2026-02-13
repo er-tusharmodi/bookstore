@@ -502,8 +502,18 @@ function bookCardMarkup(book) {
         <span>Rating ${book.rating}</span>
       </div>
       <div class="product-actions">
-        <button type="button" class="button secondary js-wishlist" data-book-id="${book.id}">Save</button>
-        <button type="button" class="button js-add-cart" data-book-id="${book.id}">Add to Cart</button>
+        <button type="button" class="icon-btn wishlist-btn js-wishlist" data-book-id="${book.id}" title="Add to Wishlist">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </button>
+        <button type="button" class="icon-btn cart-btn js-add-cart" data-book-id="${book.id}" title="Add to Cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+        </button>
       </div>
     </article>
   `;
@@ -606,13 +616,20 @@ function renderHomePage() {
           <strong>${currency.format(book.price)}</strong>
           <span>Rating ${book.rating.toFixed(1)}</span>
         </div>
-        <div class="meta-row">
-          <a class="button secondary" href="book-detail?id=${book.id}">View Details</a>
-          <a class="button secondary" href="author-detail?id=${book.authorId}">About Author</a>
-        </div>
+
         <div class="product-actions">
-          <button type="button" class="button secondary js-wishlist" data-book-id="${book.id}">Save</button>
-          <button type="button" class="button js-add-cart" data-book-id="${book.id}">Add to Cart</button>
+          <button type="button" class="icon-btn wishlist-btn js-wishlist" data-book-id="${book.id}" title="Add to Wishlist">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
+          <button type="button" class="icon-btn cart-btn js-add-cart" data-book-id="${book.id}" title="Add to Cart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+          </button>
         </div>
       `;
             syncBookActionButtons(highlightMain);

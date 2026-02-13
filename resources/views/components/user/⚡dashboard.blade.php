@@ -3,6 +3,7 @@
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Wishlist;
+use App\Support\SiteSettingStore;
 use Livewire\Component;
 
 new class extends Component
@@ -16,10 +17,12 @@ new class extends Component
         public int $totalOrders = 0;
         public array $recentActivity = [];
         public array $recentOrders = [];
+        public string $currency = 'USD';
 
         public function mount(): void
         {
                 $user = auth()->user();
+                $this->currency = (string) SiteSettingStore::get('currency', 'USD');
                 if (! $user) {
                         return;
                 }
@@ -76,7 +79,7 @@ new class extends Component
                         ->map(function (Order $order) {
                                 return [
                                         'order_number' => $order->order_number,
-                                        'total' => '$' . number_format($order->total, 2),
+                                        'total' => $this->currency . ' ' . number_format($order->total, 2),
                                         'status' => ucfirst($order->status),
                                         'date' => optional($order->placed_at)->format('M d, Y'),
                                         'items_count' => $order->items()->count(),
@@ -115,8 +118,8 @@ new class extends Component
                     <div class="account-kpi"><strong>{{ $savedBooks }}</strong><span>Saved Books</span></div>
                     <div class="account-kpi"><strong>{{ $cartItems }}</strong><span>Cart Items</span></div>
                     <div class="account-kpi"><strong>{{ $totalOrders }}</strong><span>Total Orders</span></div>
-                    <div class="account-kpi"><strong>${{ number_format($totalSpent, 2) }}</strong><span>Total Spent</span></div>
-                    <div class="account-kpi"><strong>${{ number_format($avgOrderValue, 2) }}</strong><span>Avg Order</span></div>
+                    <div class="account-kpi"><strong>{{ $currency }} {{ number_format($totalSpent, 2) }}</strong><span>Total Spent</span></div>
+                    <div class="account-kpi"><strong>{{ $currency }} {{ number_format($avgOrderValue, 2) }}</strong><span>Avg Order</span></div>
                     <div class="account-kpi"><strong>{{ $ordersThisMonth }}</strong><span>This Month</span></div>
                 </div>
             </article>

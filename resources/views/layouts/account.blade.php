@@ -68,6 +68,58 @@
       </div>
     </footer>
 
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
     @livewireScripts
+    <script>
+      document.addEventListener('livewire:initialized', () => {
+        const container = document.getElementById('toast-container');
+        if (!container) {
+          return;
+        }
+
+        const showToast = (message) => {
+          const toast = document.createElement('div');
+          toast.className = 'toast';
+          toast.textContent = message;
+          container.appendChild(toast);
+
+          requestAnimationFrame(() => {
+            toast.classList.add('show');
+          });
+
+          setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 200);
+          }, 2500);
+        };
+
+        Livewire.on('cart-updated', (data) => {
+          showToast('Cart updated');
+          // Reload cart quantities from server
+          if (data && data.bookId !== undefined) {
+            // Counter is already updated by Livewire re-render, no need to manually increment
+          }
+        });
+        Livewire.on('wishlist-updated', (data) => {
+          if (data && data.bookId !== undefined) {
+            const badge = document.querySelector(`.wishlist-badge[data-book-id="${data.bookId}"]`);
+            if (badge) {
+              const isCurrentlyFalse = badge.getAttribute('data-in-wishlist') === 'false';
+              badge.setAttribute('data-in-wishlist', !isCurrentlyFalse);
+              showToast(isCurrentlyFalse ? 'Added to wishlist' : 'Removed from wishlist');
+            }
+          }
+        });
+
+        // Handle cart counter minus button (kept for backward compatibility, but Livewire handles it now)
+        document.addEventListener('click', (e) => {
+          if (e.target.closest('.counter-btn.minus')) {
+            // Counter decrement is now handled by Livewire decrementFromCart() method
+            // This listener is kept but doesn't need to do anything
+          }
+        });
+      });
+    </script>
   </body>
 </html>

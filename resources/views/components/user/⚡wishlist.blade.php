@@ -1,6 +1,10 @@
 <?php
 
 use App\Models\Wishlist;
+use App\Models\Book;
+use App\Models\Cart;
+use App\Models\CartItem;
+use App\Support\SiteSettingStore;
 use Livewire\Component;
 
 new class extends Component
@@ -9,10 +13,56 @@ new class extends Component
         public float $averagePrice = 0.0;
         public int $underTwenty = 0;
         public string $topGenre = 'N/A';
+        public string $currency = 'USD';
+
+        public function addToCart(int $bookId): void
+        {
+            $user = auth()->user();
+            if (! $user) {
+                $this->redirectRoute('login');
+                return;
+            }
+
+            $book = Book::find($bookId);
+            if (! $book) {
+                return;
+            }
+
+            $cart = Cart::firstOrCreate(
+                ['user_id' => $user->id, 'status' => 'active'],
+                ['checked_out_at' => null]
+            );
+
+            $item = CartItem::where('cart_id', $cart->id)
+                ->where('book_id', $book->id)
+                ->first();
+
+            $quantity = $item ? $item->quantity + 1 : 1;
+            $unitPrice = (float) $book->price;
+
+            if ($item) {
+                $item->update([
+                    'quantity' => $quantity,
+                    'unit_price' => $unitPrice,
+                    'line_total' => $quantity * $unitPrice,
+                ]);
+            } else {
+                CartItem::create([
+                    'cart_id' => $cart->id,
+                    'book_id' => $book->id,
+                    'quantity' => 1,
+                    'unit_price' => $unitPrice,
+                    'line_total' => $unitPrice,
+                ]);
+            }
+
+            $this->dispatch('cart-updated');
+        }
 
         public function mount(): void
         {
                 $user = auth()->user();
+                $this->currency = (string) SiteSettingStore::get('currency', 'USD');
                 if (! $user) {
                         return;
                 }
@@ -24,6 +74,7 @@ new class extends Component
                 $this->items = $wishlist->map(function ($entry) {
                         return [
                                 'id' => $entry->id,
+                        'book_id' => $entry->book?->id,
                                 'title' => $entry->book?->title ?? 'Unknown',
                                 'author' => $entry->book?->author?->name ?? 'Unknown',
                                 'price' => $entry->book?->price ?? 0,
@@ -72,10 +123,16 @@ new class extends Component
                         <div class="item-row">
                             <div>
                                 <strong>{{ $item['title'] }}</strong>
-                                <p>{{ $item['author'] }} · ${{ number_format($item['price'], 2) }}</p>
+                                <p>{{ $item['author'] }} · {{ $currency }} {{ number_format($item['price'], 2) }}</p>
                             </div>
                             <div class="item-actions">
-                                <button class="button" type="button">Add to Cart</button>
+                                <button class="icon-btn cart-btn" type="button" wire:click="addToCart({{ $item['book_id'] }})" title="Add to Cart">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="9" cy="21" r="1"></circle>
+                                        <circle cx="20" cy="21" r="1"></circle>
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                    </svg>
+                                </button>
                                 <button class="button secondary" type="button">Remove</button>
                             </div>
                         </div>
@@ -93,7 +150,7 @@ new class extends Component
             <article class="account-panel">
                 <h2>Wishlist Insights</h2>
                 <ul class="summary-list">
-                    <li><span>Average price</span><strong>${{ number_format($averagePrice, 2) }}</strong></li>
+                    <li><span>Average price</span><strong>{{ $currency }} {{ number_format($averagePrice, 2) }}</strong></li>
                     <li><span>Items under $20</span><strong>{{ $underTwenty }} books</strong></li>
                     <li><span>Top genre</span><strong>{{ $topGenre }}</strong></li>
                 </ul>

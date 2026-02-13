@@ -2,6 +2,7 @@
 
 namespace App\Filament\Store\Resources\Orders\Schemas;
 
+use App\Support\SiteSettingStore;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -37,16 +38,20 @@ class OrderForm
                     ->default('processing'),
                 TextInput::make('subtotal')
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->prefix((string) SiteSettingStore::get('currency', 'USD')),
                 TextInput::make('shipping')
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->prefix((string) SiteSettingStore::get('currency', 'USD')),
                 TextInput::make('tax')
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->prefix((string) SiteSettingStore::get('currency', 'USD')),
                 TextInput::make('total')
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->prefix((string) SiteSettingStore::get('currency', 'USD')),
                 DateTimePicker::make('placed_at'),
                 Textarea::make('notes')
                     ->columnSpanFull(),

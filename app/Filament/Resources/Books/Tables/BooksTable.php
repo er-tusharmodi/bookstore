@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Books\Tables;
 
+use App\Support\SiteSettingStore;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -29,7 +30,7 @@ class BooksTable
                     ->formatStateUsing(fn ($record) => $record->formatRelation?->name ?? $record->format)
                     ->searchable(),
                 TextColumn::make('price')
-                    ->money('USD')
+                    ->money((string) SiteSettingStore::get('currency', 'USD'))
                     ->sortable(),
                 TextColumn::make('rating')
                     ->numeric()
